@@ -15,7 +15,7 @@ class Retrafit   {
     private val client= OkHttpClient.Builder().addInterceptor(interceptor).build()
 
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://api-life3.").client(client)
+        .baseUrl("https://api-life3.megafon.tj").client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
