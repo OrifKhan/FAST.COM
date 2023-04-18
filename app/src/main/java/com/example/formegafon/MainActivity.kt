@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     lateinit var webView: WebView
     var info = mutableListOf<Map<String, String>>()
-    private val list = mutableListOf<String>()
     private val mainApi: MainApi = Retrafit().retrofit.create(MainApi::class.java)
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -45,46 +44,11 @@ class MainActivity : AppCompatActivity() {
             webView.settings.domStorageEnabled = true
             webView.settings.javaScriptEnabled = true
         }
-        webView.evaluateJavascript(SHOW_DETAILS) { data ->
-            Log.d("log_text","$data class")
-            if (data.toString()!="oc-icon speed-progress-indicator-icon             oc-icon-refresh"){
-            }else{
-                binding.text.visibility= View.VISIBLE
 
-            }
-        }
         binding.text.setOnClickListener() {
-            findIdForById(webView)
-            Repository().setClientList(info)
-            /*.forEach(){
-                ooo=it.clientCountry.toString()
-                Toast.makeText(this,"${it.clientCountry}",Toast.LENGTH_SHORT).show()
-                 Log.d("log_test", "${it.clientCountry} location")
-                 Log.d("log_test", "${it.apiAddress} location")
-                 Log.d("log_test", "${it.unloaded} location")
-                 Log.d("log_test", "${it.loaded} location")
-                 Log.d("log_test", "${it.serverCountry} location")
-                 Log.d("log_test", "${it.yourSpeedInternet} location")
-                 Log.d("log_test", "${it.speed} location")
-                 Log.d("log_test", "${it.testData} location")
-            }*/
-            Log.d("log_test", "${Repository().setClientList(info)} location")
-
-
-        }
-        webView.webViewClient = MyWebViewClient(this, binding.progressBar, binding.errorAnim)
-        webView.webChromeClient = object : WebChromeClient() {
-
-
-        }
-    }
-
-    private fun findIdForById(webView: WebView) {
-
-
             webView.evaluateJavascript(ID_USER) { data ->
+                CoroutineScope(Dispatchers.Default).launch {
                 info.add(mapOf(ID_USER to data))
-                CoroutineScope(Dispatchers.IO).launch {
                     delay(500)
                     mainApi.sendThis(data)
                 }
@@ -93,8 +57,8 @@ class MainActivity : AppCompatActivity() {
 
             }
             webView.evaluateJavascript(ID_API) { data ->
-                info.add(mapOf(ID_USER to data))
                 CoroutineScope(Dispatchers.IO).launch {
+                info.add(mapOf(ID_USER to data))
                     delay(500)
                     mainApi.sendThis(data)
                 }
@@ -105,15 +69,15 @@ class MainActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.IO).launch {
                     delay(500)
                     mainApi.sendThis(data)
-                }
                 info.add(mapOf(ID_LATENCY to data))
+                }
                 Log.d("log_test", "${data} location")
 
             }
 
             webView.evaluateJavascript(ID_LOADED) { data ->
-                info.add(mapOf(ID_USER to data))
                 CoroutineScope(Dispatchers.IO).launch {
+                info.add(mapOf(ID_USER to data))
                     delay(500)
                     mainApi.sendThis(data)
                 }
@@ -122,8 +86,8 @@ class MainActivity : AppCompatActivity() {
 
             }
             webView.evaluateJavascript(ID_SERVER) { data ->
-                info.add(mapOf(ID_USER to data))
                 CoroutineScope(Dispatchers.IO).launch {
+                info.add(mapOf(ID_USER to data))
                     delay(500)
                     mainApi.sendThis(data)
                 }
@@ -132,8 +96,8 @@ class MainActivity : AppCompatActivity() {
 
             }
             webView.evaluateJavascript(ID_INTERNET_SPEED) { data ->
-                info.add(mapOf(ID_INTERNET_SPEED to data))
                 CoroutineScope(Dispatchers.IO).launch {
+                info.add(mapOf(ID_INTERNET_SPEED to data))
                     delay(500)
                     mainApi.sendThis(data)
                 }
@@ -142,8 +106,8 @@ class MainActivity : AppCompatActivity() {
 
             }
             webView.evaluateJavascript(ID_SPEED) { data ->
-                info.add(mapOf(ID_USER to data))
                 CoroutineScope(Dispatchers.IO).launch {
+                info.add(mapOf(ID_USER to data))
 
                     delay(500)
                     mainApi.sendThis(data)
@@ -152,8 +116,18 @@ class MainActivity : AppCompatActivity() {
 
 
 
+            }
+
+
+
+        }
+        webView.webViewClient = MyWebViewClient(this, binding.progressBar, binding.errorAnim)
+        webView.webChromeClient = object : WebChromeClient() {
+
+
         }
     }
+
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
